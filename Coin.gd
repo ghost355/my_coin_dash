@@ -22,4 +22,5 @@ func random_timer(from: float, to: float) -> void:
 
 
 func pickuped() -> void:
+	#TODO: add tweek for easing scale up and alfa blending  and a sound
 	queue_free()
