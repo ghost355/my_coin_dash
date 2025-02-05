@@ -2,7 +2,7 @@ class_name Player
 
 extends Area2D
 
-signal pickup
+signal contact_with
 
 @export var speed = 400
 
@@ -14,8 +14,11 @@ var direction = Vector2.ZERO
 
 
 func _ready() -> void:
+	area_entered.connect(_on_area_entered)
+
 	screensize = get_viewport_rect().size
 	position = screensize / 2
+	z_index = 1
 
 
 func _process(delta: float) -> void:
@@ -46,6 +49,5 @@ func move(delta: float) -> void:
 	# animated_sprite.play()
 
 
-func _on_enter_area(area: Area2D) -> void:
-	var group = area.get_groups()[0]
-	emit_signal("pickup", group)
+func _on_area_entered(area: Area2D) -> void:
+	emit_signal("contact_with", area)

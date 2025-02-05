@@ -1,6 +1,8 @@
 class_name Coin
 extends Area2D
 
+var screensize = Vector2.ZERO
+
 @onready var animated_sprite = $AnimatedSprite2D
 @onready var timer = $AnimationTimer
 
@@ -21,7 +23,7 @@ func random_timer(from: float, to: float) -> void:
 	timer.start()
 
 
-func pickuped() -> void:
+func in_contact() -> void:
 	var tw = create_tween().set_parallel().set_trans(Tween.TRANS_QUAD)
 	tw.tween_property(self, "scale", scale * 3, 0.2)
 	tw.tween_property(self, "modulate:a", 0, 0.3)
