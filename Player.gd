@@ -1,5 +1,8 @@
 class_name Player
+
 extends Area2D
+
+signal pickup
 
 @export var speed = 400
 
@@ -12,6 +15,7 @@ var direction = Vector2.ZERO
 
 func _ready() -> void:
 	screensize = get_viewport_rect().size
+	position = screensize / 2
 
 
 func _process(delta: float) -> void:
@@ -34,8 +38,14 @@ func move(delta: float) -> void:
 		animated_sprite.flip_h = false
 
 	if direction.length() == 0:
-		animated_sprite.animation = "idle"
+		# animated_sprite.animation = "idle"
+		animated_sprite.play("idle")
 	else:
-		animated_sprite.animation = "run"
+		animated_sprite.play("run")
 
-	animated_sprite.play()
+	# animated_sprite.play()
+
+
+func _on_enter_area(area: Area2D) -> void:
+	var group = area.get_groups()[0]
+	emit_signal("pickup", group)
