@@ -19,15 +19,6 @@ func _process(delta: float) -> void:
 
 	move(delta)
 
-	animated_sprite.flip_h = direction.x < 0
-
-	if direction.length() == 0:
-		animated_sprite.animation = "idle"
-	else:
-		animated_sprite.animation = "run"
-
-	animated_sprite.play()
-
 
 func move(delta: float) -> void:
 	var shape_size = collision_shape.shape.get_rect().size
@@ -36,3 +27,15 @@ func move(delta: float) -> void:
 
 	position.x = clamp(position.x, shape_size.x / 2, screensize.x - shape_size.x / 2)
 	position.y = clamp(position.y, shape_size.y / 2, screensize.y - shape_size.y / 2)
+
+	if direction.x < 0:
+		animated_sprite.flip_h = true
+	elif direction.x > 0:
+		animated_sprite.flip_h = false
+
+	if direction.length() == 0:
+		animated_sprite.animation = "idle"
+	else:
+		animated_sprite.animation = "run"
+
+	animated_sprite.play()
