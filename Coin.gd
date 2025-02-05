@@ -22,5 +22,8 @@ func random_timer(from: float, to: float) -> void:
 
 
 func pickuped() -> void:
-	#TODO: add tweek for easing scale up and alfa blending  and a sound
+	var tw = create_tween().set_parallel().set_trans(Tween.TRANS_QUAD)
+	tw.tween_property(self, "scale", scale * 3, 0.2)
+	tw.tween_property(self, "modulate:a", 0, 0.3)
+	await tw.finished
 	queue_free()
