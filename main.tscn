@@ -26,19 +26,23 @@ stretch_mode = 1
 
 [node name="Player" parent="." instance=ExtResource("2_4ep0l")]
 
-[node name="CoinSound" type="AudioStreamPlayer2D" parent="."]
+[node name="HUD" parent="." instance=ExtResource("10_av2qm")]
+
+[node name="Sound" type="Node" parent="."]
+
+[node name="Coin" type="AudioStreamPlayer2D" parent="Sound"]
 stream = ExtResource("5_arqri")
 
-[node name="LevelSound" type="AudioStreamPlayer2D" parent="."]
+[node name="Level" type="AudioStreamPlayer2D" parent="Sound"]
 stream = ExtResource("6_hobgk")
 
-[node name="HitSound" type="AudioStreamPlayer2D" parent="."]
+[node name="Hit" type="AudioStreamPlayer2D" parent="Sound"]
 stream = ExtResource("7_c35o1")
 
-[node name="PowerupSound" type="AudioStreamPlayer2D" parent="."]
+[node name="Powerup" type="AudioStreamPlayer2D" parent="Sound"]
 stream = ExtResource("8_ew4ha")
 
-[node name="EndSound" type="AudioStreamPlayer2D" parent="."]
+[node name="End" type="AudioStreamPlayer2D" parent="Sound"]
 stream = ExtResource("9_ayta1")
 
-[node name="HUD" parent="." instance=ExtResource("10_av2qm")]
+[node name="GameTick" type="Timer" parent="."]
