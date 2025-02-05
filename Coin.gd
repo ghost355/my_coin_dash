@@ -19,3 +19,7 @@ func random_timer(from: float, to: float) -> void:
 	var time = randf_range(from, to)
 	timer.wait_time = time
 	timer.start()
+
+
+func pickuped() -> void:
+	queue_free()
