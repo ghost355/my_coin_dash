@@ -29,6 +29,7 @@ func _ready() -> void:
 	hud.update_time(time_left)
 
 	screensize = get_viewport().size
+	player.screensize = screensize
 
 
 func _process(delta: float) -> void:
