@@ -1,5 +1,7 @@
 extends Node
 
+signal player_die
+
 @export var coin_scene: PackedScene
 @export var powerup_scene: PackedScene
 @export var cactus_scene: PackedScene
@@ -23,6 +25,8 @@ var score = 0
 func _ready() -> void:
 	player.contact_with.connect(on_player_contact_with)
 	game_tick.timeout.connect(_on_game_tick_timeout)
+
+	hud.update_time(time_left)
 
 	screensize = get_viewport().size
 
@@ -69,7 +73,7 @@ func spawn_powerup() -> void:
 func new_game():
 	score = 0
 	level = 1
-	time_left = 30.0
+	time_left = 3.0
 	playing = true
 
 	$Sound/Level.play()
@@ -78,21 +82,15 @@ func new_game():
 	message_label.hide()
 
 	spawn_coins()
-	player.show()
 	player.set_process(true)
 
 
 func game_over():
 	$Sound/End.play()
+	emit_signal("player_die")
 	game_tick.stop()
-	player.animated_sprite.play("hurt")
-	player.set_process(false)
-	await hud.show_message("Конец игры", 2.0)
-	player.hide()
-	message_label.text = "Собирай монетки!"
-	start_button.show()
-	message_label.show()
 	playing = false
+	time_left = 30.0
 
 
 func on_player_contact_with(object: Area2D) -> void:

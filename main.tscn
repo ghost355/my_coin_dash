@@ -53,4 +53,6 @@ wait_time = 0.1
 [node name="PowerupSpawnTimer" type="Timer" parent="."]
 one_shot = true
 
+[connection signal="player_die" from="." to="Player" method="_on_main_player_die"]
+[connection signal="player_die" from="." to="HUD" method="_on_main_player_die"]
 [connection signal="timeout" from="PowerupSpawnTimer" to="." method="_on_powerup_spawn_timer_timeout"]

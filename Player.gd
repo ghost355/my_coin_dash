@@ -51,3 +51,11 @@ func move(delta: float) -> void:
 
 func _on_area_entered(area: Area2D) -> void:
 	emit_signal("contact_with", area)
+
+
+func _on_main_player_die() -> void:
+	var hart_time = 2.0
+	set_process(false)
+	animated_sprite.play("hurt")
+	await Utils.async_scale_and_dissolve(self, hart_time)
+	set_process(true)
