@@ -49,3 +49,8 @@ stream = ExtResource("9_ayta1")
 
 [node name="GameTick" type="Timer" parent="."]
 wait_time = 0.1
+
+[node name="PowerupSpawnTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="PowerupSpawnTimer" to="." method="_on_powerup_spawn_timer_timeout"]

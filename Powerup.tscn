@@ -66,3 +66,8 @@ animation = &"powerup"
 shape = SubResource("CircleShape2D_3mwd4")
 
 [node name="AnimationTimer" type="Timer" parent="."]
+
+[node name="LifetimeTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+autostart = true

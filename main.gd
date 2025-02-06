@@ -10,12 +10,12 @@ var screensize = Vector2.ZERO
 var level = 1
 var time_left = 30.0
 var playing = false
-var coin_amount = 3
 var score = 0
 
 @onready var player = $Player
 @onready var hud = $HUD
 @onready var game_tick = $GameTick
+@onready var powerup_spawn_timer = $PowerupSpawnTimer
 @onready var start_button = $HUD/MarginContainer2/StartButton
 @onready var message_label = $HUD/MessageLabel
 
@@ -23,19 +23,17 @@ var score = 0
 func _ready() -> void:
 	player.contact_with.connect(on_player_contact_with)
 	game_tick.timeout.connect(_on_game_tick_timeout)
-	powerup_timer.timeout.connect(_on_powerup_timer_timeout)
 
 	screensize = get_viewport().size
 
 
 func _process(delta: float) -> void:
 	# next level starting
-	if playing and coins_collected():
+	if playing and all_coins_collected():
 		level += 1
-		coin_amount += 2
+		powerup_spawn_timer.wait_time = randf_range(1.0, 3.0)
+		powerup_spawn_timer.start()
 		spawn_coins()
-		if get_tree().get_nodes_in_group("powerups").is_empty():
-			spawn_powerup()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -46,7 +44,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func spawn_coins() -> void:
-	for i in coin_amount:
+	for i in level + 3:
 		var c = coin_scene.instantiate()
 		var half_radius = c.get_node("CollisionShape2D").shape.radius / 2
 		add_child(c)
@@ -58,7 +56,6 @@ func spawn_coins() -> void:
 
 
 func spawn_powerup() -> void:
-	await get_tree().create_timer(randf_range(2.0, 4.0)).timeout
 	var p = powerup_scene.instantiate()
 	var half_radius = p.get_node("CollisionShape2D").shape.radius / 2
 	add_child(p)
@@ -81,6 +78,7 @@ func new_game():
 	message_label.hide()
 
 	spawn_coins()
+	player.show()
 	player.set_process(true)
 
 
@@ -88,12 +86,13 @@ func game_over():
 	$Sound/End.play()
 	game_tick.stop()
 	player.animated_sprite.play("hurt")
+	player.set_process(false)
 	await hud.show_message("Конец игры", 2.0)
+	player.hide()
 	message_label.text = "Собирай монетки!"
 	start_button.show()
 	message_label.show()
 	playing = false
-	player.set_process(false)
 
 
 func on_player_contact_with(object: Area2D) -> void:
@@ -114,9 +113,13 @@ func _on_game_tick_timeout() -> void:
 	hud.update_time(time_left)
 
 
-func _on_powerup_timer_timeout() -> void:
-	pass
-
-
-func coins_collected() -> bool:
+func all_coins_collected() -> bool:
 	return get_tree().get_nodes_in_group("coins").is_empty()
+
+
+func no_any_powerups() -> bool:
+	return get_tree().get_nodes_in_group("powerups").is_empty()
+
+
+func _on_powerup_spawn_timer_timeout() -> void:
+	spawn_powerup()
