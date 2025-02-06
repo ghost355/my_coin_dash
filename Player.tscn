@@ -79,6 +79,7 @@ metadata/_edit_group_ = true
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_fhlfh")
 animation = &"hurt"
+frame_progress = 0.547942
 offset = Vector2(0, -5)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

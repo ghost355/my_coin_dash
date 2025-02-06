@@ -46,3 +46,4 @@ stream = ExtResource("8_ew4ha")
 stream = ExtResource("9_ayta1")
 
 [node name="GameTick" type="Timer" parent="."]
+wait_time = 0.1
