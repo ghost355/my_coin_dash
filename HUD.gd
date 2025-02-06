@@ -14,6 +14,8 @@ func update_time(time: float) -> void:
 	time_label.text = "%.1f" % time
 
 
-func print_message(message: String, showtime: float) -> void:
+func show_message(message: String, showtime: float) -> void:
 	message_label.text = message
+	message_label.show()
 	await get_tree().create_timer(showtime).timeout
+	message_label.hide()

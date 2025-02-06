@@ -59,12 +59,19 @@ func new_game():
 	message_label.hide()
 
 	spawn_coins()
+	player.set_process(true)
 
 
 func game_over():
 	$Sound/End.play()
 	game_tick.stop()
 	player.animated_sprite.play("hurt")
+	hud.show_message("Конец игры", 2.0)
+	hud.message_label.text = "Собирай монетки!"
+	start_button.show()
+	message_label.show()
+	playing = false
+	player.set_process(false)
 
 
 func on_player_contact_with(object: Area2D) -> void:
@@ -79,10 +86,10 @@ func on_player_contact_with(object: Area2D) -> void:
 
 func _on_game_tick_timeout() -> void:
 	time_left -= 0.1
-	hud.update_time(time_left)
-
-	if time_left == 0:
+	if time_left <= 0.0:
+		time_left = 0
 		game_over()
+	hud.update_time(time_left)
 
 
 func coins_collected() -> bool:
