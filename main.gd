@@ -53,6 +53,7 @@ func new_game():
 	time_left = 30
 	playing = true
 
+	$Sound/Level.play()
 	game_tick.start()
 	start_button.hide()
 	message_label.hide()
@@ -61,12 +62,14 @@ func new_game():
 
 
 func game_over():
+	$Sound/End.play()
 	game_tick.stop()
 	player.animated_sprite.play("hurt")
 
 
 func on_player_contact_with(object: Area2D) -> void:
 	if object.is_in_group("coins"):
+		$Sound/Coin.play()
 		score += 1
 		hud.update_score(score)
 
