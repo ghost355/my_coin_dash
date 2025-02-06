@@ -58,4 +58,5 @@ func _on_main_player_die() -> void:
 	set_process(false)
 	animated_sprite.play("hurt")
 	await Utils.async_scale_and_dissolve(self, hart_time)
+	position = screensize / 2
 	set_process(true)
