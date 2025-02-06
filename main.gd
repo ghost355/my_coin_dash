@@ -4,6 +4,7 @@ extends Node
 @export var powerup_scene: PackedScene
 @export var cactus_scene: PackedScene
 @export var speed = 350
+@export var powerup_lifetime = 3
 
 var screensize = Vector2.ZERO
 var level = 1
@@ -22,6 +23,7 @@ var score = 0
 func _ready() -> void:
 	player.contact_with.connect(on_player_contact_with)
 	game_tick.timeout.connect(_on_game_tick_timeout)
+	powerup_timer.timeout.connect(_on_powerup_timer_timeout)
 
 	screensize = get_viewport().size
 
@@ -32,11 +34,15 @@ func _process(delta: float) -> void:
 		level += 1
 		coin_amount += 2
 		spawn_coins()
+		if get_tree().get_nodes_in_group("powerups").is_empty():
+			spawn_powerup()
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("user_start"):
 		new_game()
+	if event.is_action_pressed("user_quit"):
+		get_tree().quit()
 
 
 func spawn_coins() -> void:
@@ -51,10 +57,22 @@ func spawn_coins() -> void:
 		)
 
 
+func spawn_powerup() -> void:
+	await get_tree().create_timer(randf_range(2.0, 4.0)).timeout
+	var p = powerup_scene.instantiate()
+	var half_radius = p.get_node("CollisionShape2D").shape.radius / 2
+	add_child(p)
+	p.screensize = screensize
+	p.position = Vector2(
+		randi_range(half_radius, screensize.x - half_radius),
+		randi_range(half_radius, screensize.y - half_radius)
+	)
+
+
 func new_game():
 	score = 0
 	level = 1
-	time_left = 10
+	time_left = 30.0
 	playing = true
 
 	$Sound/Level.play()
@@ -94,6 +112,10 @@ func _on_game_tick_timeout() -> void:
 		time_left = 0
 		game_over()
 	hud.update_time(time_left)
+
+
+func _on_powerup_timer_timeout() -> void:
+	pass
 
 
 func coins_collected() -> bool:

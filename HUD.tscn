@@ -68,5 +68,7 @@ layout_mode = 2
 theme_override_fonts/font = ExtResource("1_neuxy")
 theme_override_font_sizes/font_size = 48
 shortcut = SubResource("Shortcut_e361s")
-text = "СТАРТ"
+text = "СТАРТ
+(нажми Enter)
+"
 icon_alignment = 1

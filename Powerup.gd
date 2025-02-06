@@ -1,4 +1,4 @@
-class_name Coin
+class_name Powerup
 extends Area2D
 
 var screensize = Vector2.ZERO
@@ -10,12 +10,11 @@ var screensize = Vector2.ZERO
 
 func _ready() -> void:
 	timer.timeout.connect(_on_timer_timeout)
-	random_timer(0.5, 4.5)
+	random_timer(0.5, 1.5)
 
 
 func _on_timer_timeout() -> void:
 	animated_sprite.play()
-	random_timer(0.5, 4.5)
 
 
 func random_timer(from: float, to: float) -> void:
