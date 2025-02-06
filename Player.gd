@@ -15,8 +15,6 @@ var direction = Vector2.ZERO
 
 func _ready() -> void:
 	area_entered.connect(_on_area_entered)
-
-	screensize = get_viewport_rect().size
 	position = screensize / 2
 	z_index = 1
 
