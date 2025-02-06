@@ -8,12 +8,15 @@ extends Node
 var screensize = Vector2.ZERO
 var level = 1
 var time_left = 30.0
+var playing = false
+var coin_amount = 3
 var score = 0
 
 @onready var player = $Player
 @onready var hud = $HUD
 @onready var game_tick = $GameTick
 @onready var start_button = $HUD/MarginContainer2/StartButton
+@onready var message_label = $HUD/MessageLabel
 
 
 func _ready() -> void:
@@ -22,11 +25,13 @@ func _ready() -> void:
 
 	screensize = get_viewport().size
 
-	spawn_coins()
-
 
 func _process(delta: float) -> void:
-	pass
+	# next level starting
+	if playing and coins_collected():
+		level += 1
+		coin_amount += 2
+		spawn_coins()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -35,7 +40,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func spawn_coins() -> void:
-	for i in level * 5:
+	for i in coin_amount:
 		var c = coin_scene.instantiate()
 		add_child(c)
 		c.screensize = screensize
@@ -46,9 +51,11 @@ func new_game():
 	score = 0
 	level = 1
 	time_left = 30
+	playing = true
 
 	game_tick.start()
 	start_button.hide()
+	message_label.hide()
 
 	spawn_coins()
 
@@ -73,3 +80,7 @@ func _on_game_tick_timeout() -> void:
 
 	if time_left == 0:
 		game_over()
+
+
+func coins_collected() -> bool:
+	return get_tree().get_nodes_in_group("coins").is_empty()
