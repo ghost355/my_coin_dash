@@ -17,5 +17,6 @@ func update_time(time: float) -> void:
 func show_message(message: String, showtime: float) -> void:
 	message_label.text = message
 	message_label.show()
+	print("Timeout start")
 	await get_tree().create_timer(showtime).timeout
 	message_label.hide()

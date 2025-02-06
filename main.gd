@@ -42,15 +42,19 @@ func _unhandled_input(event: InputEvent) -> void:
 func spawn_coins() -> void:
 	for i in coin_amount:
 		var c = coin_scene.instantiate()
+		var half_radius = c.get_node("CollisionShape2D").shape.radius / 2
 		add_child(c)
 		c.screensize = screensize
-		c.position = Vector2(randi_range(0, screensize.x), randi_range(0, screensize.y))
+		c.position = Vector2(
+			randi_range(half_radius, screensize.x - half_radius),
+			randi_range(half_radius, screensize.y - half_radius)
+		)
 
 
 func new_game():
 	score = 0
 	level = 1
-	time_left = 30
+	time_left = 10
 	playing = true
 
 	$Sound/Level.play()
@@ -66,8 +70,8 @@ func game_over():
 	$Sound/End.play()
 	game_tick.stop()
 	player.animated_sprite.play("hurt")
-	hud.show_message("Конец игры", 2.0)
-	hud.message_label.text = "Собирай монетки!"
+	await hud.show_message("Конец игры", 2.0)
+	message_label.text = "Собирай монетки!"
 	start_button.show()
 	message_label.show()
 	playing = false
