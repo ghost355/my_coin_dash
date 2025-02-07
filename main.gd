@@ -1,30 +1,37 @@
 extends Node
 
+signal game_over
+signal start_game
+
 @export var coin_scene: PackedScene
 @export var powerup_scene: PackedScene
 @export var cactus_scene: PackedScene
 @export var speed = 350
 @export var powerup_lifetime = 3
+@export var time_constant = 30.0
 
 var screensize = Vector2.ZERO
 var level = 1
-var time_left = 30.0
 var playing = false
 var score = 0
+var time_left = time_constant
 
 @onready var player = $Player
 @onready var hud = $HUD
 @onready var game_tick = $GameTick
-@onready var powerup_spawn_timer = $PowerupSpawnTimer
 @onready var start_button = $HUD/MarginContainer2/StartButton
 @onready var message_label = $HUD/MessageLabel
+@onready var powerup_spawn_timer = $PowerupSpawnTimer
 
 
 func _ready() -> void:
-	player.contact_with.connect(on_player_contact_with)
+	self.game_over.connect(on_game_over)
+	self.start_game.connect(on_start_game)
 	game_tick.timeout.connect(_on_game_tick_timeout)
+	player.pickup.connect(on_player_pickup)
 
 	screensize = get_viewport().size
+	player.screensize = screensize
 
 
 func _process(delta: float) -> void:
@@ -38,7 +45,7 @@ func _process(delta: float) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("user_start"):
-		new_game()
+		emit_signal("start_game")
 	if event.is_action_pressed("user_quit"):
 		get_tree().quit()
 
@@ -46,70 +53,41 @@ func _unhandled_input(event: InputEvent) -> void:
 func spawn_coins() -> void:
 	for i in level + 3:
 		var c = coin_scene.instantiate()
-		var half_radius = c.get_node("CollisionShape2D").shape.radius / 2
 		add_child(c)
 		c.screensize = screensize
-		c.position = Vector2(
-			randi_range(half_radius, screensize.x - half_radius),
-			randi_range(half_radius, screensize.y - half_radius)
-		)
+		c.spawn()
 
 
 func spawn_powerup() -> void:
 	var p = powerup_scene.instantiate()
-	var half_radius = p.get_node("CollisionShape2D").shape.radius / 2
 	add_child(p)
 	p.screensize = screensize
-	p.position = Vector2(
-		randi_range(half_radius, screensize.x - half_radius),
-		randi_range(half_radius, screensize.y - half_radius)
-	)
+	p.spawn()
 
 
-func new_game():
+func on_start_game():
 	score = 0
 	level = 1
-	time_left = 30.0
+	time_left = time_constant
 	playing = true
 
 	$Sound/Level.play()
 	game_tick.start()
-	start_button.hide()
-	message_label.hide()
 
 	spawn_coins()
-	player.show()
-	player.set_process(true)
 
 
-func game_over():
+func on_game_over():
 	$Sound/End.play()
 	game_tick.stop()
-	player.animated_sprite.play("hurt")
-	player.set_process(false)
-	await hud.show_message("Конец игры", 2.0)
-	player.hide()
-	message_label.text = "Собирай монетки!"
-	start_button.show()
-	message_label.show()
 	playing = false
-
-
-func on_player_contact_with(object: Area2D) -> void:
-	if object.is_in_group("coins"):
-		$Sound/Coin.play()
-		score += 1
-		hud.update_score(score)
-
-	if object.has_method("in_contact"):
-		object.in_contact()
 
 
 func _on_game_tick_timeout() -> void:
 	time_left -= 0.1
 	if time_left <= 0.0:
 		time_left = 0
-		game_over()
+		emit_signal("game_over")
 	hud.update_time(time_left)
 
 
@@ -123,3 +101,15 @@ func no_any_powerups() -> bool:
 
 func _on_powerup_spawn_timer_timeout() -> void:
 	spawn_powerup()
+
+
+func on_player_pickup(target: Area2D) -> void:
+	if target.is_in_group("coins"):
+		score += 1
+		hud.update_score(score)
+		target.collected()
+	if target.is_in_group("powerups"):
+		time_left += 5
+		target.collected()
+	if target.is_in_group("obstacles"):
+		emit_signal("game_over")

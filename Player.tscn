@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://blmqengmhrfe2"]
+[gd_scene load_steps=19 format=3 uid="uid://blmqengmhrfe2"]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_en6jo"]
 [ext_resource type="Texture2D" uid="uid://dkcjwhvc75ukj" path="res://assets/player/hurt/player-hurt-1.png" id="2_qq8ke"]
@@ -13,6 +13,9 @@
 [ext_resource type="Texture2D" uid="uid://cjrd18e8wdcwn" path="res://assets/player/run/player-run-4.png" id="11_o14yx"]
 [ext_resource type="Texture2D" uid="uid://cjo2x2caeg617" path="res://assets/player/run/player-run-5.png" id="12_c725f"]
 [ext_resource type="Texture2D" uid="uid://cnmjhhkknieii" path="res://assets/player/run/player-run-6.png" id="13_21idx"]
+[ext_resource type="AudioStream" uid="uid://bjmrrk77pt0qq" path="res://assets/audio/Coin.wav" id="14_j7q8d"]
+[ext_resource type="AudioStream" uid="uid://diccgulantqws" path="res://assets/audio/Hit.wav" id="15_d4p0s"]
+[ext_resource type="AudioStream" uid="uid://xmvubqhoeqx8" path="res://assets/audio/Powerup.wav" id="16_hhcgh"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_fhlfh"]
 animations = [{
@@ -25,7 +28,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"hurt",
-"speed": 5.0
+"speed": 8.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -65,7 +68,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"run",
-"speed": 5.0
+"speed": 8.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cejkj"]
@@ -78,10 +81,18 @@ metadata/_edit_group_ = true
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_fhlfh")
-animation = &"hurt"
-frame_progress = 0.547942
+animation = &"idle"
 offset = Vector2(0, -5)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
 shape = SubResource("RectangleShape2D_cejkj")
+
+[node name="CoinSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("14_j7q8d")
+
+[node name="ObsctaclesSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("15_d4p0s")
+
+[node name="PowerupSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("16_hhcgh")

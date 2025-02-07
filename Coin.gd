@@ -26,5 +26,17 @@ func random_timer(from: float, to: float) -> void:
 
 func in_contact() -> void:
 	collision_shape.set_deferred("disabled", true)
-	await Utils.async_scale_and_dissolve(self)
+	await Utils.async_scale_and_dissolve(self, 2.0)
+	queue_free()
+
+
+func spawn() -> void:
+	var offset = collision_shape.shape.radius / 2
+	position = Vector2(
+		randf_range(offset, screensize.x + offset), randf_range(0, screensize.y + offset)
+	)
+
+
+func collected() -> void:
+	collision_shape.set_deferred("disabled", true)
 	queue_free()
